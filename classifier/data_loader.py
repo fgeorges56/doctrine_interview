@@ -10,6 +10,7 @@ class DataLoader:
 
 	def load_data(self):
 		try:
+			# Here, we assume the csv files have the right columns
 			df = pd.read_csv(self.filename, names=['content', 'class_name'])
 			df['class_id'] = self.class_id
 			return df
