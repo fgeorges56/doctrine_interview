@@ -74,21 +74,18 @@ x = vec.fit_transform(full_data_cleaned["content"])
 
 # This parameter has been decided empirically. It has the value that maximizes both teh accuracy and recall of each class.
 # Without overfitting, of course.
+n_components = 150
 
-# searching for right n_components
-for test_n_components in range(50, 250, 25):
-	print("evaluating n_components = ", test_n_components)
-	svd = TruncatedSVD(n_components=test_n_components) # This parameter has to be adapted, to best fit our situation.
-	fitted_x = svd.fit_transform(x)
-	#
-	#
-	y = full_data_cleaned["class_id"].values
-	cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
-	model = svm.SVC(kernel='linear', C=1, decision_function_shape='ovo')
-	#
-	metrics = cross_validate(model, fitted_x, y, scoring=['precision_macro', 'recall_macro'], cv=cv, n_jobs=-1)
-	print('Precision: %.3f (%.3f)' % (mean(metrics["test_precision_macro"]), std(metrics["test_precision_macro"])))
-	print('Recall: %.3f (%.3f)' % (mean(metrics["test_recall_macro"]), std(metrics["test_recall_macro"])))
+svd = TruncatedSVD(n_components=n_components) # This parameter has to be adapted, to best fit our situation.
+fitted_x = svd.fit_transform(x)
+
+y = full_data_cleaned["class_id"].values
+cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
+model = svm.SVC(kernel='linear', C=1, decision_function_shape='ovo')
+
+metrics = cross_validate(model, fitted_x, y, scoring=['precision_macro', 'recall_macro'], cv=cv, n_jobs=-1)
+print('Precision: %.3f (%.3f)' % (mean(metrics["test_precision_macro"]), std(metrics["test_precision_macro"])))
+print('Recall: %.3f (%.3f)' % (mean(metrics["test_recall_macro"]), std(metrics["test_recall_macro"])))
 
 
 	
@@ -100,7 +97,4 @@ X_train, X_test, y_train, y_test = train_test_split(fitted_x, y, test_size=0.2)
 fitted_model = model.fit(X_train, y_train)
 pred_y = model.predict(X_test)
 print(confusion_matrix(y_test, pred_y))
-
-
-
 
