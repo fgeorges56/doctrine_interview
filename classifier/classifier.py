@@ -18,8 +18,8 @@ from sklearn.model_selection import train_test_split
 # They may be imbalanced. We address this issue.
 def merge_datasets(dataframe_array, max_nb_records=200000):
 	biggest_dataframe_size = min(
-									max([x.shape[0] for x in dataframe_array]),
-									max_nb_records) # I do not want too many records, to avoid memory problems
+					max([x.shape[0] for x in dataframe_array]),
+					max_nb_records) # I do not want too many records, to avoid memory problems
 	#print("biggest_dataframe_size", biggest_dataframe_size)
 	res = pd.DataFrame()
 	for d in dataframe_array:
